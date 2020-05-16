@@ -1,9 +1,17 @@
 import java.util.ArrayList;
 
 public class Solution05 {
-    //盛最多水的容器
+    // 盛最多水的容器
+    // 利用双指针法可以将算法的时间复杂度优化到O(n)
     public int maxArea(int[] height) {
         int ret = 0;
+        int left = 0, right = height.length -1;
+        while(left != right){
+            int curArea = (right - left) * Math.min(height[left], height[right]);
+            ret = Math.max(ret, curArea);
+            if(height[left] < height[right]) left++;
+            else right--;
+        }
 
         return ret;
     }
@@ -74,6 +82,8 @@ public class Solution05 {
     public static void main(String[] args) {
         Solution05 s = new Solution05();
         System.out.println(s.con("AB",1));
+        int[] a = {1,8,6,2,5,4,8,3,7};
+        System.out.println(s.maxArea(a));
 
     }
 }
