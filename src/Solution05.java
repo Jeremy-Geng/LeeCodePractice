@@ -1,6 +1,109 @@
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 public class Solution05 {
+
+    //整数转罗马数字
+    // 贪心算法，因为罗马数字的规则是从左到右尽量选择大的符号
+    public String intToRoman2(int num){
+        StringBuilder result = new StringBuilder();
+        int[] nums = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        String[] symbols = {"M", "CM", "D", "CD","C","XC","L","XL","X","IX","V","IV","I"};
+        for(int i = 0; i < nums.length && num >0;i++){
+            while(nums[i] <= num){
+                num -= nums[i];
+                result.append(symbols[i]);
+            }
+        }
+        return result.toString();
+    }
+
+    //用取余解析数字
+    public String intToRoman(int num) {
+        StringBuilder rst = new StringBuilder();
+        while(num > 0) {
+            int M = num / 1000;
+            if (M > 0) {
+                for (int i = 0; i < M; i++) {
+                    rst.append('M');
+                }
+                num -= M * 1000;
+            } else {
+                int C = num / 100;
+                if(C > 0) {
+                    int D = num / 500;
+                    if(D > 0){
+                        if( C == 9){
+                            rst.append("CM");
+                            num -= 900;
+                        }else{
+                            rst.append('D');
+                            num -= 500;
+                        }
+                    }else{
+                        if(C == 4){
+                            rst.append("CD");
+                            num -= 400;
+                        }else {
+                            for (int i = 0; i < C; i++) {
+                                rst.append('C');
+                            }
+                            num -=C * 100;
+                        }
+                    }
+                }else{
+                    int X = num / 10;
+                    if(X > 0){
+                        int L = num / 50;
+                        if(L > 0 ){
+                            if(X == 9){
+                                rst.append("XC");
+                                num -= 90;
+                            }else{
+                                rst.append('L');
+                                num -= 50;
+                            }
+                        }else{
+                            if( X == 4){
+                                rst.append("XL");
+                                num -= 40;
+                            }else{
+                                for(int i = 0; i < X; i++){
+                                    rst.append('X');
+                                }
+                                num -= X * 10;
+                            }
+                        }
+                    }else{
+                        int I = num;
+                        int V = I / 5;
+                        if(V > 0){
+                            if(I == 9){
+                                rst.append("IX");
+                                num -= 9;
+                            }else{
+                                rst.append('V');
+                                num -= 5;
+                            }
+                        }else{
+                            if(I == 4){
+                                rst.append("IV");
+                                num -= 4;
+                            }else{
+                                for(int i = 0; i < I; i++){
+                                    rst.append('I');
+                                }
+                                num -= I;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        return rst.toString();
+    }
+
     // 盛最多水的容器
     // 利用双指针法可以将算法的时间复杂度优化到O(n)
     public int maxArea(int[] height) {
@@ -12,7 +115,6 @@ public class Solution05 {
             if(height[left] < height[right]) left++;
             else right--;
         }
-
         return ret;
     }
 
@@ -81,9 +183,8 @@ public class Solution05 {
 
     public static void main(String[] args) {
         Solution05 s = new Solution05();
-        System.out.println(s.con("AB",1));
-        int[] a = {1,8,6,2,5,4,8,3,7};
-        System.out.println(s.maxArea(a));
+        System.out.println(s.intToRoman(1882));
+        System.out.println(s.intToRoman2(1882));
 
     }
 }
