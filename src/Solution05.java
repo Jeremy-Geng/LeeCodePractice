@@ -1,7 +1,178 @@
 import java.io.PrintStream;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Solution05 {
+    //有效的括号
+    public boolean isValid(String s) {
+        if(s.equals("")) return true;
+        boolean f = false;
+        Stack<Character> p = new Stack<>();
+        Stack<Character> l = new Stack<>();
+        Stack<Character> r = new Stack<>();
+        for(int i = 0; i < s.length();i++){
+            f = false;
+            char t = s.charAt(i);
+            if(t == '(' || t == '[' || t == '{'){
+                p.push(t);
+                l.push(t);
+            }else{
+                r.push(t);
+                if(t == ')'){
+                    while(!p.empty() && p.peek() != '(')
+                        p.pop();
+                }else if(t == ']'){
+                    while(!p.empty() && p.peek() != '[')
+                        p.pop();
+                }else{
+                    while(!p.empty() && p.peek() != '{')
+                        p.pop();
+                }
+                if(!p.empty()){
+                    f = true;
+                    p.pop();
+                }
+            }
+
+        }
+        return p.empty() && f && l.size() == r.size();
+    }
+
+    // DFS 深度优先搜寻
+    private HashMap<Integer,String> p= new HashMap<>(){ {put(2,"abc");
+        put(3,"def");
+        put(4,"ghi");
+        put(5,"jkl");
+        put(6,"mno");
+        put(7,"pqrs");
+        put(8,"tuv");
+        put(9,"wxyz");}};
+
+    //电话号码的字母组合
+    private List<String> rst = new ArrayList<>();
+
+    public List<String> letterCombinations(String digits) {
+        backTract("", digits);
+        return rst;
+    }
+
+    public void backTract(String result, String digits){
+        if(digits.length() == 0){
+            rst.add(result);
+        }else{
+            String num = digits.substring(0,1);
+            String letter = p.get(Integer.parseInt(num));
+            for(int i = 0; i < letter.length();i++){
+                char t = letter.charAt(i);
+                String subDigits = digits.substring(1);
+                backTract(result + t,subDigits );
+            }
+        }
+    }
+
+    //最长公共前缀
+    public String longestCommonPrefix(String[] strs) {
+
+        if(strs.length == 0) return "";
+        StringBuilder rst = new StringBuilder();
+        int lengh = strs[0].length();
+        for(String str : strs){
+            lengh = lengh > str.length() ? str.length() : lengh;
+        }
+
+        for(int i = 0; i < lengh; i++){
+            char t = strs[0].charAt(i);
+            boolean f = true;
+            for(String str : strs){
+                if(str.charAt(i) != t) f = false;
+            }
+            if(f) rst.append(t);
+            if(i == 0 && rst.toString().equals("")) break;
+        }
+        return rst.toString();
+    }
+
+
+    //最近的三数之和
+    //排序，双指针
+    public int threeSumClosest2(int[] nums, int target) {
+        Arrays.sort(nums);
+        int result = nums[0] + nums[1] + nums[nums.length-1];
+        for(int i = 0; i < nums.length; i++){
+            int L = i+1;
+            int R = nums.length - 1;
+            int sum = result;
+            while(L < R){
+                sum = nums[i] + nums[L] + nums[R];
+                if(sum == target){
+                    return sum;
+                }else if(sum < target){
+                    if((Math.abs(sum - target)) < (Math.abs(result - target))) result = sum;
+                    L++;
+                }else{
+                    if((Math.abs(sum - target)) < (Math.abs(result - target))) result = sum;
+                    R--;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    // 双指针
+    public int threeSumClosest(int[] nums, int target) {
+        Arrays.sort(nums);
+        int result = nums[0] + nums[1] + nums[nums.length-1];
+        for(int i = 0; i < nums.length; i++){
+            int L = i+1;
+            int R = nums.length - 1;
+            int sum = result;
+            while(L < R){
+                sum = nums[i] + nums[L] + nums[R];
+                if(sum == target){
+                    return sum;
+                }else if(sum < target){
+                    if((Math.abs(sum - target)) < (Math.abs(result - target))) result = sum;
+                    L++;
+                }else{
+                    if((Math.abs(sum - target)) < (Math.abs(result - target))) result = sum;
+                    R--;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    //三数之和
+    //题解做法，按顺序固定i,在其右侧使用双指针
+    public List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+        if(nums.length < 3) return result;
+        for(int i = 0; i < nums.length; i++){
+            if(nums[i] > 0) break;
+            if(i > 0 && nums[i] == nums[i-1]) continue;
+            int L = i + 1;
+            int R = nums.length - 1;
+            while(L < R){
+                int sum = nums[i] + nums[L] + nums[R];
+                if(sum == 0){
+                    result.add(Arrays.asList(nums[i], nums[L], nums[R]));
+                    while(L < R && nums[L] == nums[L+1]) L++;
+                    while(L < R && nums[R] == nums[R-1]) R--;
+                    L++;
+                    R--;
+                }else if(sum < 0){
+                    L++;
+                }else if(sum > 0){
+                    R--;
+                }
+            }
+
+        }
+        return result;
+    }
+
 
     //整数转罗马数字
     // 贪心算法，因为罗马数字的规则是从左到右尽量选择大的符号
@@ -183,8 +354,8 @@ public class Solution05 {
 
     public static void main(String[] args) {
         Solution05 s = new Solution05();
-        System.out.println(s.intToRoman(1882));
-        System.out.println(s.intToRoman2(1882));
+        System.out.println(s.isValid("([)"));
+
 
     }
 }
