@@ -1,15 +1,14 @@
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Stack;
 
 public class FunctionTest {
     public static void main(String[] args) {
-        StringBuilder strb = new StringBuilder();
-        System.out.println(strb.append(5).append('c').append("HHAHAHA"));
-        strb.setCharAt(1,'t');
-        System.out.println(strb);
-        strb.insert(2,"fafa");
-        System.out.println(strb);
-        strb.delete(0,strb.length()-1);
-        System.out.println(strb);
+        String a = "23";
+        int num = a.charAt(0);
+        System.out.println(num
+        );
 
     }
 }

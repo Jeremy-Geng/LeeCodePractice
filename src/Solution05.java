@@ -1,7 +1,170 @@
 import java.io.PrintStream;
 import java.util.*;
 
+
 public class Solution05 {
+
+
+    //括号生成 深度优先搜索（dps）+ 剪枝
+    public List<String> generateParenthesis(int n) {
+        if(n == 0) return null;
+        List<String> rst = new ArrayList<>();
+        getBraces(n,n,"",rst);
+
+        return rst;
+    }
+
+    public void getBraces(int left, int right, String cur, List<String> rst){
+        //结束条件
+        if(left == 0 && right == 0){
+            rst.add(cur);
+        }
+
+        //剪枝
+        if(left >  right) return;
+
+        if(left > 0){
+            getBraces(left-1,right,cur+"(",rst);
+        }
+
+        if(right >0){
+            getBraces(left,right-1,cur+")",rst);
+        }
+
+    }
+
+    //移除元素
+    public int removeElement(int[] nums, int val) {
+        int p = 0;
+        if (nums.length ==0) return 0;
+        for(int i =0;i<nums.length;i++){
+            if(nums[i] != val){
+                nums[p++] = nums[i];
+            }
+        }
+        return p;
+    }
+
+    //删除链表的倒数第N个节点 可以使用dummy node（哑节点）来简化算法
+    //也可以使用双指针一次遍历成功
+    public ListNode removeNthFromEnd2(ListNode head, int n){
+        ListNode Dummy = new ListNode(0);
+        Dummy.next = head;
+        ListNode first = Dummy;
+        ListNode second = Dummy;
+        int i = 0;
+        while(i < n+1){
+            second = second.next;
+            i++;
+        }
+
+        while(second != null){
+            first = first.next;
+            second = second.next;
+        }
+        first.next = first.next.next;
+        return Dummy.next;
+    }
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+            int length = 0;
+            ListNode t = head;
+            while(t != null){
+                t = t.next;
+                length++;
+            }
+
+
+            ListNode Dummy = new ListNode(0);
+            Dummy.next = head;
+            ListNode pre = Dummy;
+            for(int i = 0; i < length - n;i++){
+                pre = pre.next;
+            }
+            pre.next = pre.next.next;
+            return Dummy.next;
+    }
+
+    //删除排序数组中的重复项
+    public int removeDuplicates(int[] nums) {
+        int rst = 0 ;
+        if(nums.length == 0) return 0;
+        int sameNum = nums[0];
+        int p = 0;
+        for(int i = 1; i < nums.length;i++){
+            if(nums[i] != sameNum){
+                nums[++p] = nums[i];
+                sameNum = nums[i];
+            }
+        }
+        return p+1;
+    }
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+            if(l1 == null) return l2;
+            if(l2 == null) return  l1;
+            if(l1 == null && l2 ==null) return null;
+            int l1Root = l1.val;
+            int l2Root = l2.val;
+            ListNode root = null;
+            ListNode a = null;
+            ListNode b = null;
+            if(l1Root > l2Root){
+                root = new ListNode(l2Root);
+                a = l1;
+                b = l2.next;
+            }else{
+                root = new ListNode(l1Root);
+                a = l1.next;
+                b = l2;
+            }
+            ListNode t = root;
+            while(a != null && b != null){ // 1-3-5-7-8  2-3   1 2 3
+                int aval = a.val;
+                int bval = b.val;
+                if(aval < bval){
+                    t.next = new ListNode(aval);
+                    a = a.next;
+                }else{
+                    t.next = new ListNode(bval);
+                    b = b.next;
+                }
+                t = t.next;
+            }
+            if(a == null) t.next = b;
+            if(b == null) t.next = a;
+
+            return root;
+    }
+
+
+    //四数之和
+    //双指针，用contains去重,时间复杂度可以优化
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        Arrays.sort(nums);  // -2, -1, 0, 0, 1, 2;
+        int len = nums.length;
+        List<List<Integer>> p = new ArrayList<>();
+        if(len < 4) return p;
+        for(int i = 0; i <= len - 4 ; i++){
+            for(int j = i+1; j <= len - 3; j++){
+                int l = j + 1;
+                int r = len - 1;
+                while(l < r){
+//                    while(nums[l] == nums[l+1] && l + 1 < r ) l++;
+//                    while(nums[r] == nums[r-1] && r - 1 > l) r--;
+                    if(nums[i] + nums[j] + nums[l] + nums[r] == target){
+                        List<Integer> o = Arrays.asList(nums[i], nums[j], nums[l], nums[r]);
+                        if(!p.contains(o)) p.add(o);
+                        l++;
+                        r--;
+                    }else if(nums[i] + nums[j] + nums[l] + nums[r] > target){
+                        r--;
+                    }else{
+                        l++;
+                    }
+                }
+            }
+        }
+        return p;
+    }
     //有效的括号
     public boolean isValid(String s) {
         if(s.equals("")) return true;
@@ -37,8 +200,32 @@ public class Solution05 {
         return p.empty() && f && l.size() == r.size();
     }
 
+    //电话号码的字母组合（复习）
+    public List<String> letterCombinations2(String digits) {
+        if(digits == null) return null;
+        List<String> rst = new ArrayList<>();
+        lc(0,digits,"",rst);
+        return rst;
+    }
+
+    public void lc(int level, String digits, String curStr, List<String> rst){
+        int num = digits.charAt(level) - '0';
+        String letters = p.get(num);
+        if(level == digits.length()-1) {
+            for(int i = 0; i < letters.length();i++){
+                rst.add(curStr+letters.charAt(i));
+            }
+            return;
+        }
+        for(int i = 0; i < letters.length();i++ ){
+            lc(level+1,digits,curStr + letters.charAt(i),rst);
+        }
+
+    }
+
+
     // DFS 深度优先搜寻
-    private HashMap<Integer,String> p= new HashMap<>(){ {put(2,"abc");
+    private HashMap<Integer,String> p = new HashMap<>(){ {put(2,"abc");
         put(3,"def");
         put(4,"ghi");
         put(5,"jkl");
@@ -350,12 +537,8 @@ public class Solution05 {
         return result.toString();
     }
 
-
-
     public static void main(String[] args) {
         Solution05 s = new Solution05();
-        System.out.println(s.isValid("([)"));
-
-
+        System.out.println(s.letterCombinations2("2344"));
     }
 }
