@@ -1,8 +1,131 @@
 import java.util.*;
 
 public class Solution0601 {
+    //组合总和 2020/06/13
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        List<List<Integer>> rst = new ArrayList<>();
+        List<Integer> cands = new ArrayList<>();
+        for (int i : candidates){
+            cands.add(i);
+        }
+        combination(rst,target,cands,null);
+        return rst;
+    }
 
-    //最大子序和
+    public void combination(List<List<Integer>> rst, int target, List<Integer> candidates, List<Integer> single){
+        if(target == 0) {
+            rst.add(single);
+            return;
+        }
+
+        for(int i = 0; i < candidates.size();i++){
+            int cur = candidates.get(i);
+            if(target < cur) return;
+
+            List<Integer> p = new ArrayList<>();
+            if(single != null){
+                for(int k :single){
+                    p.add(k);
+                }
+            }
+
+            int temp = target - cur;
+            p.add(cur);
+            combination(rst,temp,candidates.subList(i,candidates.size()),p);
+        }
+    }
+
+
+    //加一 2020/06/13
+    public int[] plusOne(int[] digits) {
+        if(digits[0] == 0) return new int[]{1};
+
+
+        int i = digits.length - 1;
+        while(i >=0 && digits[i] == 9 ){
+            digits[i] = 0;
+            i--;
+        }
+
+        if(i != -1){
+            digits[i] +=1;
+            return digits;
+        }else{
+              int rst[] = new int[digits.length+1];
+              rst[0] = 1;
+              return rst;
+        }
+
+    }
+
+    //有效数独 2020/06/12
+    public boolean isValidSudoku(char[][] board) {
+        boolean t = true;
+        //数字1到9在每一行只能出现一次，数字1到9在每一列只能出现一次
+        int l = board.length;
+        int il = board[0].length;
+
+        //检查行和列
+        for(int i = 0 ; i < l;i++){
+            Set<Character> prow = new HashSet<>();
+            Set<Character> pcolumn = new HashSet<>();
+            char[] row = board[i];
+            for(int j = 0; j < il; j++){
+                char currow = row[j];
+                char curcolumn = board[j][i];
+                if(currow != '.'){
+                    if(prow.contains(currow)) {
+                        return false;
+                    }else prow.add(currow);
+                }
+
+                if(curcolumn != '.'){
+                    if(pcolumn.contains(curcolumn)){
+                        return false;
+                    }else pcolumn.add(curcolumn);
+                }
+            }
+        }
+
+        //检查3X3宫格
+        for(int i = 0; i < l; i+=3){
+            for(int j = 0; j < il; j+=3){
+                Set<Character> p = new HashSet<>();
+                for(int m = i; m < i+3;m++){
+                    for(int n = j; n <j+3;n++){
+                        char cur = board[m][n];
+                        if(cur != '.'){
+                            if(p.contains(cur)){
+                                return false;
+                            }else p.add(cur);
+                        }
+                    }
+                }
+            }
+        }
+
+        return t;
+    }
+
+
+    //最后一个单词的长度 2020/06/12
+    public int lengthOfLastWord(String s) {
+        if(s.length() == 0) return 0;
+        s = s.trim();
+        int rst = 0;
+        for(int i = s.length() -1; i >= 0; i--){
+            char cur = s.charAt(i);
+            if(cur == ' '){
+                break;
+            }else{
+                rst++;
+            }
+        }
+        return rst;
+    }
+
+    //在排序数组中查找元素的第一个和最后一个位置 2020/06/11
     public int[] searchRange(int[] nums, int target) {
         if(nums.length == 0) return new int[]{-1,-1};
         if(nums.length == 1) {
@@ -40,6 +163,8 @@ public class Solution0601 {
         }
         return -1;
     }
+
+    //最大子序和 2020/06/11
     //动态规划
     public int maxSubArray2(int[] nums){
         if(nums.length == 0) return 0;
@@ -69,6 +194,7 @@ public class Solution0601 {
     }
 
 
+    // 2020/06/11
     //合并区间
     // 注意comparable<T> 和 comparator 的区别，自然排序和非自然排序, 通过比较器作为Arrays.sort 或 Collentions.sort()的参数实现
     public int[][] merge2(int[][] intervals){
@@ -406,11 +532,10 @@ public class Solution0601 {
 
     public static void main(String[] args) {
         Solution0601 s = new Solution0601();
-        int test[] = {1,1,2};
-        int a[] = s.searchRange(test,1);
-        for(int i : a){
-            System.out.println(i);
-        }
+        int[] a = {2,3,6,7};
+        System.out.println(s.combinationSum(a,7));
+
+
     }
 }
 
