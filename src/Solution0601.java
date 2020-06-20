@@ -13,7 +13,11 @@ public class Solution0601 {
         return rst;
     }
 
-    public void combination(List<List<Integer>> rst, int target, List<Integer> candidates, List<Integer> single){
+    public void combination(List<List<Integer>> rst,
+                            int target,
+                            List<Integer> candidates,
+                            List<Integer> single){
+
         if(target == 0) {
             rst.add(single);
             return;
